@@ -23,6 +23,7 @@ import {
   Sparkles,
   CheckCircle2,
   Navigation,
+  Heart,
 } from 'lucide-react-native';
 
 interface RecipientRequestCardProps {
@@ -106,11 +107,27 @@ export const RecipientRequestCard: React.FC<RecipientRequestCardProps> = ({
         </View>
       </View>
 
-      {/* Short Introduction Note */}
-      {requesterRevealedData.shortIntro && (
+      {/* Personal Message Note */}
+      {(request.customMessage || requesterRevealedData.shortIntro) && (
         <View style={styles.introBox}>
-          <Text style={styles.introBoxTitle}>Personal Introduction:</Text>
-          <Text style={styles.introText}>"{requesterRevealedData.shortIntro}"</Text>
+          <Text style={styles.introBoxTitle}>Personal Message:</Text>
+          <Text style={styles.introText}>
+            "{request.customMessage || requesterRevealedData.shortIntro}"
+          </Text>
+        </View>
+      )}
+
+      {/* What Caught Their Attention (Reasons) */}
+      {request.selectedInterestReasons && request.selectedInterestReasons.length > 0 && (
+        <View style={styles.reasonsHighlightCard}>
+          <Text style={styles.reasonsHighlightTitle}>What caught their attention:</Text>
+          <View style={styles.reasonsChipsWrap}>
+            {request.selectedInterestReasons.map((reason, idx) => (
+              <View key={`reason_${idx}`} style={styles.reasonBadge}>
+                <Text style={styles.reasonBadgeText}>{reason}</Text>
+              </View>
+            ))}
+          </View>
         </View>
       )}
 
@@ -129,6 +146,27 @@ export const RecipientRequestCard: React.FC<RecipientRequestCardProps> = ({
               Suggested Public Venue: {routeDetails.potentialPublicVenue}
             </Text>
           )}
+        </View>
+      )}
+
+      {/* Match Highlights (if enabled) */}
+      {request.includeMatchingDetails !== false && (
+        <View style={styles.matchHighlightsBox}>
+          <View style={styles.reasonsHeader}>
+            <Sparkles size={13} color="#E11D48" />
+            <Text style={[styles.reasonsHeaderText, { color: '#9F1239' }]}>Match Highlights</Text>
+          </View>
+          <View style={styles.matchHighlightsGrid}>
+            <View style={styles.matchMiniPill}>
+              <Text style={styles.matchMiniPillText}>💖 {request.compatibilityPercentage}% Compatible</Text>
+            </View>
+            <View style={styles.matchMiniPill}>
+              <Text style={styles.matchMiniPillText}>☕ 5 Shared Margams</Text>
+            </View>
+            <View style={styles.matchMiniPill}>
+              <Text style={styles.matchMiniPillText}>🎯 3 Common Goals</Text>
+            </View>
+          </View>
         </View>
       )}
 
@@ -174,8 +212,8 @@ export const RecipientRequestCard: React.FC<RecipientRequestCardProps> = ({
             onPress={() => onAccept(request.id)}
             activeOpacity={0.85}
           >
-            <Check size={16} color="#0B0F14" strokeWidth={3} />
-            <Text style={styles.acceptButtonText}>Accept</Text>
+            <Heart size={16} color="#FFFFFF" fill="#FFFFFF" />
+            <Text style={styles.acceptButtonText}>Accept 💖</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -233,17 +271,17 @@ export const RecipientRequestCard: React.FC<RecipientRequestCardProps> = ({
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: COLORS.surface,
-    borderRadius: RADIUS.lg,
-    padding: SPACING.lg,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 18,
     borderWidth: 1,
-    borderColor: COLORS.borderActive,
-    gap: SPACING.md,
+    borderColor: '#F1F5F9',
+    gap: 14,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
     shadowRadius: 8,
-    elevation: 6,
+    elevation: 3,
   },
   topBanner: {
     flexDirection: 'row',
@@ -254,65 +292,66 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bannerSubtitle: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: COLORS.primary,
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#2563EB',
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 0.5,
   },
   bannerTitle: {
     fontSize: 18,
     fontWeight: '800',
-    color: COLORS.textPrimary,
+    color: '#0F172A',
+    marginTop: 2,
   },
   compatPill: {
-    backgroundColor: 'rgba(229, 139, 88, 0.15)',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: RADIUS.full,
+    backgroundColor: '#EFF6FF',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: COLORS.primary,
+    borderColor: '#BFDBFE',
   },
   compatPillText: {
     fontSize: 12,
     fontWeight: '800',
-    color: COLORS.primary,
+    color: '#2563EB',
   },
   profileSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SPACING.md,
+    gap: 14,
   },
   profileImage: {
     width: 64,
     height: 64,
     borderRadius: 32,
     borderWidth: 2,
-    borderColor: COLORS.primary,
+    borderColor: '#2563EB',
   },
   photoPlaceholder: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    backgroundColor: '#F1F5F9',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: COLORS.borderSubtle,
+    borderColor: '#E2E8F0',
   },
   photoPlaceholderText: {
     fontSize: 9,
-    color: COLORS.textMuted,
+    color: '#64748B',
     textAlign: 'center',
   },
   profileDetails: {
     flex: 1,
-    gap: 2,
+    gap: 3,
   },
   nameAge: {
     fontSize: 17,
     fontWeight: '800',
-    color: COLORS.textPrimary,
+    color: '#0F172A',
   },
   iconInfoRow: {
     flexDirection: 'row',
@@ -321,35 +360,35 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: '#475569',
     fontWeight: '500',
   },
   introBox: {
-    backgroundColor: 'rgba(18, 24, 32, 0.7)',
-    padding: SPACING.sm,
-    borderRadius: RADIUS.sm,
+    backgroundColor: '#EFF6FF',
+    padding: 12,
+    borderRadius: 14,
     borderLeftWidth: 3,
-    borderLeftColor: COLORS.primary,
+    borderLeftColor: '#2563EB',
   },
   introBoxTitle: {
     fontSize: 10,
-    fontWeight: '700',
-    color: COLORS.primary,
+    fontWeight: '800',
+    color: '#2563EB',
     textTransform: 'uppercase',
     marginBottom: 2,
   },
   introText: {
     fontSize: 12,
-    color: COLORS.textPrimary,
+    color: '#1E293B',
     fontStyle: 'italic',
     lineHeight: 18,
   },
   routeContextCard: {
-    backgroundColor: 'rgba(245, 158, 11, 0.08)',
-    borderRadius: RADIUS.sm,
-    padding: SPACING.sm,
+    backgroundColor: '#FFFBEB',
+    borderRadius: 14,
+    padding: 12,
     borderWidth: 1,
-    borderColor: 'rgba(245, 158, 11, 0.25)',
+    borderColor: '#FDE68A',
   },
   routeContextTitleRow: {
     flexDirection: 'row',
@@ -360,24 +399,83 @@ const styles = StyleSheet.create({
   routeContextTitle: {
     fontSize: 11,
     fontWeight: '800',
-    color: COLORS.routeAmber,
+    color: '#D97706',
   },
   routeContextDetails: {
-    fontSize: 11,
-    color: COLORS.textPrimary,
+    fontSize: 12,
+    color: '#0F172A',
     fontWeight: '600',
   },
   routeVenueNotice: {
     fontSize: 11,
-    color: COLORS.textSecondary,
+    color: '#92400E',
     marginTop: 2,
   },
-  reasonsCard: {
-    backgroundColor: 'rgba(18, 24, 32, 0.85)',
-    borderRadius: RADIUS.md,
-    padding: SPACING.sm,
+  reasonsHighlightCard: {
+    backgroundColor: '#FFF1F2',
+    padding: 12,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: COLORS.borderSubtle,
+    borderColor: '#FECDD3',
+    gap: 8,
+  },
+  reasonsHighlightTitle: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#9F1239',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  reasonsChipsWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  reasonBadge: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#FECDD3',
+  },
+  reasonBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#E11D48',
+  },
+  matchHighlightsBox: {
+    backgroundColor: '#FFF1F2',
+    padding: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#FECDD3',
+    gap: 8,
+  },
+  matchHighlightsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  matchMiniPill: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#FECDD3',
+  },
+  matchMiniPillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  reasonsCard: {
+    backgroundColor: '#F0FDF4',
+    borderRadius: 14,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#BBF7D0',
   },
   reasonsHeader: {
     flexDirection: 'row',
@@ -387,8 +485,8 @@ const styles = StyleSheet.create({
   },
   reasonsHeaderText: {
     fontSize: 11,
-    fontWeight: '700',
-    color: COLORS.primary,
+    fontWeight: '800',
+    color: '#166534',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
@@ -401,56 +499,61 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   reasonText: {
-    fontSize: 11,
-    color: COLORS.textPrimary,
+    fontSize: 12,
+    color: '#166534',
   },
   noticeBox: {
     paddingVertical: 2,
   },
   noticeText: {
-    fontSize: 10,
-    color: COLORS.textMuted,
+    fontSize: 11,
+    color: '#64748B',
     textAlign: 'center',
-    lineHeight: 14,
+    lineHeight: 15,
   },
   actionsContainer: {
-    gap: SPACING.sm,
+    gap: 10,
   },
   primaryButtonsRow: {
     flexDirection: 'row',
-    gap: SPACING.md,
+    gap: 12,
   },
   acceptButton: {
     flex: 1,
-    backgroundColor: COLORS.primary,
+    backgroundColor: '#EF4444',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    paddingVertical: 12,
-    borderRadius: RADIUS.md,
+    height: 46,
+    borderRadius: 14,
+    shadowColor: '#EF4444',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 3,
   },
   acceptButtonText: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#0B0F14',
+    color: '#FFFFFF',
   },
   declineButton: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: '#F1F5F9',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    paddingVertical: 12,
-    borderRadius: RADIUS.md,
+    height: 46,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: COLORS.borderSubtle,
+    borderColor: '#E2E8F0',
   },
   declineButtonText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: COLORS.textSecondary,
+    fontWeight: '700',
+    color: '#64748B',
   },
   secondaryActionsRow: {
     flexDirection: 'row',
@@ -466,14 +569,14 @@ const styles = StyleSheet.create({
   textActionLabel: {
     fontSize: 11,
     fontWeight: '600',
-    color: COLORS.textMuted,
+    color: '#64748B',
   },
   safetyMenu: {
-    backgroundColor: COLORS.surfaceLight,
-    padding: SPACING.sm,
-    borderRadius: RADIUS.sm,
+    backgroundColor: '#FEF2F2',
+    padding: 10,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(239, 68, 68, 0.3)',
+    borderColor: '#FECACA',
     gap: 6,
     marginTop: 4,
   },
@@ -482,6 +585,7 @@ const styles = StyleSheet.create({
   },
   safetyItemText: {
     fontSize: 11,
-    color: COLORS.textMuted,
+    color: '#DC2626',
+    fontWeight: '600',
   },
 });

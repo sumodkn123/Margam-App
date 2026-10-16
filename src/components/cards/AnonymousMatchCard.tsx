@@ -14,17 +14,20 @@ import {
   EyeOff,
   Sparkles,
   Users,
+  Heart,
 } from 'lucide-react-native';
 
 interface AnonymousMatchCardProps {
   candidate: AnonymousCandidate;
   onSendIntroduction: (candidate: AnonymousCandidate) => void;
+  onViewProfile?: (candidate: AnonymousCandidate) => void;
   onClose?: () => void;
 }
 
 export const AnonymousMatchCard: React.FC<AnonymousMatchCardProps> = ({
   candidate,
   onSendIntroduction,
+  onViewProfile,
   onClose,
 }) => {
   const isCluster = candidate.clusterCount && candidate.clusterCount > 1;
@@ -109,39 +112,50 @@ export const AnonymousMatchCard: React.FC<AnonymousMatchCardProps> = ({
         </Text>
       </View>
 
-      {/* Primary Action Button */}
-      <TouchableOpacity
-        style={styles.actionButton}
-        onPress={() => onSendIntroduction(candidate)}
-        activeOpacity={0.85}
-      >
-        <Send size={15} color="#0B0F14" />
-        <Text style={styles.actionButtonText}>
-          {isCluster ? 'Browse Anonymous Area' : 'Send Introduction Request'}
-        </Text>
-      </TouchableOpacity>
+      {/* Action Buttons Row */}
+      <View style={styles.actionButtonsRow}>
+        {onViewProfile && (
+          <TouchableOpacity
+            style={styles.viewProfileBtn}
+            onPress={() => onViewProfile(candidate)}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.viewProfileBtnText}>View Profile</Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          style={[styles.actionButton, onViewProfile ? { flex: 1.4 } : { width: '100%' }]}
+          onPress={() => onSendIntroduction(candidate)}
+          activeOpacity={0.85}
+        >
+          <Heart size={15} color="#FFFFFF" fill="#FFFFFF" />
+          <Text style={styles.actionButtonText}>
+            {isCluster ? 'Browse Anonymous Area 💖' : 'Request Intro 💖'}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: COLORS.surfaceLight,
-    borderRadius: RADIUS.lg,
-    padding: SPACING.lg,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 18,
     borderWidth: 1,
-    borderColor: COLORS.borderActive,
+    borderColor: '#F1F5F9',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: SPACING.sm,
+    marginBottom: 10,
   },
   badgeRow: {
     flexDirection: 'row',
@@ -153,12 +167,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(229, 139, 88, 0.15)',
+    backgroundColor: '#EFF6FF',
     paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: RADIUS.full,
+    paddingVertical: 4,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: COLORS.primary,
+    borderColor: '#BFDBFE',
   },
   compatRing: {
     fontSize: 12,
@@ -166,64 +180,64 @@ const styles = StyleSheet.create({
   compatPercent: {
     fontSize: 12,
     fontWeight: '800',
-    color: COLORS.primary,
+    color: '#2563EB',
   },
   routeTag: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(245, 158, 11, 0.18)',
+    backgroundColor: '#FFFBEB',
     paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: RADIUS.full,
+    paddingVertical: 4,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: COLORS.routeAmber,
+    borderColor: '#FDE68A',
   },
   routeTagText: {
     fontSize: 11,
     fontWeight: '700',
-    color: COLORS.routeAmber,
+    color: '#D97706',
   },
   privacyLockBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    paddingHorizontal: 6,
-    paddingVertical: 3,
-    borderRadius: RADIUS.full,
+    gap: 4,
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 14,
   },
   privacyLockText: {
     fontSize: 10,
-    color: COLORS.textMuted,
+    color: '#64748B',
     fontWeight: '600',
   },
   closeBtn: {
-    fontSize: 20,
-    color: COLORS.textMuted,
-    lineHeight: 20,
+    fontSize: 22,
+    color: '#64748B',
+    lineHeight: 22,
   },
   bodySection: {
-    marginVertical: SPACING.xs,
+    marginVertical: 4,
   },
   matchTitle: {
     fontSize: 18,
     fontWeight: '800',
-    color: COLORS.textPrimary,
+    color: '#0F172A',
     marginBottom: 4,
   },
   discoveryQuote: {
     fontSize: 13,
-    color: COLORS.textSecondary,
+    color: '#475569',
     fontStyle: 'italic',
     lineHeight: 18,
-    marginBottom: SPACING.sm,
+    marginBottom: 10,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    gap: SPACING.md,
+    gap: 12,
     marginTop: 2,
   },
   metaItem: {
@@ -233,16 +247,16 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 12,
-    color: COLORS.textSecondary,
+    color: '#475569',
     fontWeight: '600',
   },
   reasoningSection: {
-    backgroundColor: 'rgba(18, 24, 32, 0.65)',
-    borderRadius: RADIUS.md,
-    padding: SPACING.sm,
-    marginVertical: SPACING.sm,
+    backgroundColor: '#F0FDF4',
+    borderRadius: 14,
+    padding: 12,
+    marginVertical: 10,
     borderWidth: 1,
-    borderColor: COLORS.borderSubtle,
+    borderColor: '#BBF7D0',
   },
   reasoningHeader: {
     flexDirection: 'row',
@@ -252,8 +266,8 @@ const styles = StyleSheet.create({
   },
   reasoningHeaderText: {
     fontSize: 11,
-    fontWeight: '700',
-    color: COLORS.primary,
+    fontWeight: '800',
+    color: '#166534',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
@@ -267,36 +281,56 @@ const styles = StyleSheet.create({
   },
   reasonText: {
     fontSize: 12,
-    color: COLORS.textPrimary,
+    color: '#166534',
     flex: 1,
   },
   privacyNoticeBox: {
     paddingVertical: 4,
-    marginBottom: SPACING.sm,
+    marginBottom: 10,
   },
   privacyNoticeText: {
     fontSize: 11,
-    color: COLORS.textMuted,
+    color: '#64748B',
     textAlign: 'center',
   },
   actionButton: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: '#EF4444',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: SPACING.sm,
-    paddingVertical: 12,
-    borderRadius: RADIUS.md,
-    shadowColor: COLORS.primary,
+    gap: 8,
+    height: 48,
+    borderRadius: 14,
+    shadowColor: '#EF4444',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowRadius: 5,
     elevation: 3,
   },
   actionButtonText: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#0B0F14',
+    color: '#FFFFFF',
     letterSpacing: 0.5,
+  },
+  actionButtonsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  viewProfileBtn: {
+    flex: 1,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  viewProfileBtnText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#0F172A',
   },
 });

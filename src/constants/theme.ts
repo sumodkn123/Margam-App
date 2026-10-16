@@ -8,11 +8,13 @@ export const COLORS = {
   surfaceLight: '#1A232E',      // Card Container
   surfaceHover: '#232D3B',      // Active/Hover State
   
-  // Brand Pathway Accents
-  primary: '#E58B58',           // Margam Terracotta Gold
-  primaryLight: '#F3A778',      // Pathway Highlight
-  primaryDark: '#C86E3C',       // Deep Terracotta
-  primaryMuted: 'rgba(229, 139, 88, 0.15)',
+  // Brand Pathway Accents & Matrimonial Love Red
+  primary: '#EF4444',           // Vibrant Red Primary
+  primaryLight: '#F87171',      // Light Red Highlight
+  primaryDark: '#DC2626',       // Deep Crimson Red
+  primaryMuted: 'rgba(239, 68, 68, 0.15)',
+  heartRed: '#EF4444',          // Love Heart Red
+  loveCrimson: '#9F1239',       // Deep Love Crimson
 
   // Cartography & Routing
   routeCyan: '#38BDF8',         // Route Polyline
@@ -115,4 +117,11 @@ export const TYPOGRAPHY = {
     fontSize: 12,
     fontWeight: '600' as const,
   },
+};
+
+export const THEME = {
+  colors: COLORS,
+  spacing: SPACING,
+  radius: RADIUS,
+  typography: TYPOGRAPHY,
 };

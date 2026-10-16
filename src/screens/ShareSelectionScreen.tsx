@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { COLORS, SPACING, RADIUS } from '../constants/theme';
 import { FieldShareSelector } from '../components/privacy/FieldShareSelector';
@@ -155,16 +156,16 @@ export const ShareSelectionScreen: React.FC<ShareSelectionScreenProps> = ({
     <View style={styles.container}>
       {/* Top Navigation */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backBtn}>
-          <ArrowLeft size={20} color={COLORS.textPrimary} />
+        <TouchableOpacity onPress={onBack} style={styles.backBtn} activeOpacity={0.7}>
+          <ArrowLeft size={20} color="#0F172A" />
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>What would you like to share?</Text>
           <Text style={styles.headerSubtitle}>
-            Candidate in {candidate.approximateZone} ({candidate.compatibilityPercentage}%)
+            Candidate in {candidate.approximateZone} ({candidate.compatibilityPercentage}% match)
           </Text>
         </View>
-        <ShieldCheck size={20} color={COLORS.primary} />
+        <ShieldCheck size={22} color="#10B981" />
       </View>
 
       <ScrollView style={styles.scrollArea} contentContainerStyle={styles.scrollContent}>
@@ -207,10 +208,10 @@ export const ShareSelectionScreen: React.FC<ShareSelectionScreenProps> = ({
               activeOpacity={0.7}
             >
               {isImprovingAi ? (
-                <ActivityIndicator size="small" color={COLORS.primary} />
+                <ActivityIndicator size="small" color="#8B5CF6" />
               ) : (
                 <>
-                  <Sparkles size={12} color={COLORS.primary} />
+                  <Sparkles size={13} color="#8B5CF6" />
                   <Text style={styles.aiButtonText}>Improve with AI</Text>
                 </>
               )}
@@ -224,10 +225,10 @@ export const ShareSelectionScreen: React.FC<ShareSelectionScreenProps> = ({
             multiline
             numberOfLines={4}
             placeholder="Type your introduction note here..."
-            placeholderTextColor={COLORS.textMuted}
+            placeholderTextColor="#94A3B8"
           />
           <Text style={styles.aiNotice}>
-            AI respects your intent and never fabricates personal or career claims.
+            AI respects your privacy intent and never fabricates personal claims.
           </Text>
         </View>
 
@@ -254,7 +255,7 @@ export const ShareSelectionScreen: React.FC<ShareSelectionScreenProps> = ({
           onPress={() => setIsPreviewVisible(true)}
           activeOpacity={0.85}
         >
-          <Eye size={16} color="#0B0F14" />
+          <Eye size={18} color="#FFFFFF" />
           <Text style={styles.previewBtnText}>Review Disclosures & Preview</Text>
         </TouchableOpacity>
       </View>
@@ -276,21 +277,28 @@ export const ShareSelectionScreen: React.FC<ShareSelectionScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: '#F8FAFC',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: SPACING.md,
-    paddingTop: SPACING.md,
-    paddingBottom: SPACING.sm,
-    backgroundColor: COLORS.surface,
+    paddingHorizontal: 16,
+    paddingTop: Platform.OS === 'ios' ? 52 : 42,
+    paddingBottom: 12,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.borderSubtle,
-    gap: SPACING.sm,
+    borderBottomColor: '#F1F5F9',
+    gap: 12,
   },
   backBtn: {
-    padding: 6,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitleContainer: {
     flex: 1,
@@ -298,75 +306,87 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 16,
     fontWeight: '800',
-    color: COLORS.textPrimary,
+    color: '#0F172A',
+    letterSpacing: -0.3,
   },
   headerSubtitle: {
-    fontSize: 11,
-    color: COLORS.primary,
+    fontSize: 12,
+    color: '#2563EB',
     fontWeight: '600',
+    marginTop: 1,
   },
   scrollArea: {
     flex: 1,
   },
   scrollContent: {
-    padding: SPACING.md,
-    gap: SPACING.md,
-    paddingBottom: 90,
+    padding: 16,
+    gap: 16,
+    paddingBottom: 110,
   },
   typeSelectorCard: {
-    backgroundColor: COLORS.surface,
-    padding: SPACING.md,
-    borderRadius: RADIUS.md,
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: COLORS.borderSubtle,
-    gap: 8,
+    borderColor: '#F1F5F9',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 6,
+    elevation: 1,
+    gap: 10,
   },
   sectionHeading: {
     fontSize: 13,
     fontWeight: '800',
-    color: COLORS.textPrimary,
+    color: '#0F172A',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   typeChipsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 6,
+    gap: 8,
   },
   typeChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.04)',
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderRadius: RADIUS.full,
+    gap: 6,
+    backgroundColor: '#F8FAFC',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: COLORS.borderSubtle,
+    borderColor: '#E2E8F0',
   },
   typeChipActive: {
-    backgroundColor: 'rgba(229, 139, 88, 0.2)',
-    borderColor: COLORS.primary,
+    backgroundColor: '#EFF6FF',
+    borderColor: '#2563EB',
   },
   typeChipIcon: {
-    fontSize: 12,
+    fontSize: 13,
   },
   typeChipLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: '#64748B',
   },
   typeChipLabelActive: {
-    color: COLORS.primary,
+    color: '#2563EB',
     fontWeight: '800',
   },
   messageCard: {
-    backgroundColor: COLORS.surface,
-    padding: SPACING.md,
-    borderRadius: RADIUS.md,
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: COLORS.borderSubtle,
-    gap: 8,
+    borderColor: '#F1F5F9',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 6,
+    elevation: 1,
+    gap: 10,
   },
   messageHeaderRow: {
     flexDirection: 'row',
@@ -377,33 +397,33 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(229, 139, 88, 0.15)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: RADIUS.sm,
+    backgroundColor: '#FAF5FF',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: COLORS.primary,
+    borderColor: '#E9D5FF',
   },
   aiButtonText: {
     fontSize: 11,
     fontWeight: '700',
-    color: COLORS.primary,
+    color: '#8B5CF6',
   },
   messageInput: {
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-    borderRadius: RADIUS.sm,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: COLORS.borderSubtle,
-    padding: SPACING.sm,
-    color: COLORS.textPrimary,
+    borderColor: '#E2E8F0',
+    padding: 12,
+    color: '#0F172A',
     fontSize: 13,
     lineHeight: 18,
     textAlignVertical: 'top',
-    minHeight: 80,
+    minHeight: 88,
   },
   aiNotice: {
     fontSize: 10,
-    color: COLORS.textMuted,
+    color: '#64748B',
     fontStyle: 'italic',
   },
   fieldsContainer: {
@@ -411,7 +431,7 @@ const styles = StyleSheet.create({
   },
   fieldsSubtext: {
     fontSize: 11,
-    color: COLORS.textMuted,
+    color: '#64748B',
     marginBottom: 8,
   },
   stickyFooter: {
@@ -419,28 +439,35 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(11, 15, 20, 0.95)',
-    padding: SPACING.md,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: Platform.OS === 'ios' ? 34 : 16,
     borderTopWidth: 1,
-    borderTopColor: COLORS.borderSubtle,
+    borderTopColor: '#F1F5F9',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 4,
   },
   previewBtn: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: '#2563EB',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    paddingVertical: 13,
-    borderRadius: RADIUS.md,
-    shadowColor: COLORS.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 4,
+    height: 48,
+    borderRadius: 14,
+    shadowColor: '#2563EB',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 3,
   },
   previewBtnText: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#0B0F14',
+    color: '#FFFFFF',
   },
 });

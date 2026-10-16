@@ -11,12 +11,11 @@ import { FuzzedCoordinate, UserProfile, UserShareSelection, AnonymousCandidate, 
 function seededRandom(seedStr: string): () => number {
   let hash = 0;
   for (let i = 0; i < seedStr.length; i++) {
-    hash = (hash << 5) - hash + seedStr.charCodeAt(i);
-    hash |= 0;
+    hash = ((hash << 5) - hash + seedStr.charCodeAt(i)) >>> 0;
   }
   return () => {
-    hash = (hash * 9301 + 49297) % 233280;
-    return hash / 233280;
+    hash = (hash * 9301 + 49297) >>> 0;
+    return (hash % 233280) / 233280;
   };
 }
 
