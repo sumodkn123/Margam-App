@@ -180,13 +180,13 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   primaryButton: {
-    backgroundColor: '#EF4444', // Vibrant Red primary
+    backgroundColor: '#E11D48', // Kerala Sunset Rose Primary
     borderWidth: 1,
-    borderColor: '#F87171',
+    borderColor: '#FB7185',
     // 3D Shadow depth
-    shadowColor: '#DC2626',
+    shadowColor: '#BE123C',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.38,
+    shadowOpacity: 0.32,
     shadowRadius: 10,
     elevation: 6,
   },

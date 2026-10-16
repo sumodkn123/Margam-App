@@ -11,6 +11,7 @@ import {
   Platform,
   Modal,
 } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { CURRENT_USER, SAMPLE_INCOMING_REQUEST, ANONYMOUS_MATCHES, POPULAR_ROUTES } from './src/constants/mockData';
 import {
   AnonymousCandidate,
@@ -342,19 +343,22 @@ export default function App() {
 
   if (!isAuthenticated) {
     return (
-      <SafeAreaView style={styles.safeArea}>
-        <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
-        <MargamAuthFlow onAuthenticated={() => setIsAuthenticated(true)} />
-        {isLaunchScreenActive && (
-          <MargamLaunchScreen onAnimationComplete={() => setIsLaunchScreenActive(false)} />
-        )}
-      </SafeAreaView>
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.safeArea}>
+          <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
+          <MargamAuthFlow onAuthenticated={() => setIsAuthenticated(true)} />
+          {isLaunchScreenActive && (
+            <MargamLaunchScreen onAnimationComplete={() => setIsLaunchScreenActive(false)} />
+          )}
+        </SafeAreaView>
+      </SafeAreaProvider>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       {/* Main Screen Body */}
       <View style={styles.screenWrapper}>
@@ -712,7 +716,8 @@ export default function App() {
         <MargamLaunchScreen onAnimationComplete={() => setIsLaunchScreenActive(false)} />
       )}
     </SafeAreaView>
-  );
+  </SafeAreaProvider>
+);
 }
 
 const styles = StyleSheet.create({

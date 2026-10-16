@@ -322,9 +322,32 @@ export const ChatConversationScreen: React.FC<ChatConversationScreenProps> = ({
             style={styles.headerActionBtn}
             onPress={() => {
               Alert.alert(
-                `${recipientName}'s Profile`,
-                'Verified connection on Margam.\n\n• Approximate Area: ' + area + '\n• Profession: ' + profession + '\n• Safety Level: Encrypted Connection',
-                [{ text: 'Close', style: 'cancel' }]
+                `${recipientName}'s Profile Options`,
+                `Approximate Area: ${area}\nProfession: ${profession}\nCompatibility: ${compatibilityPercentage}%\n\nSafety: Verified connection on Margam`,
+                [
+                  { text: 'View Full Profile', onPress: onOpenProfile },
+                  {
+                    text: 'Report Member',
+                    style: 'destructive',
+                    onPress: () =>
+                      Alert.alert(
+                        'Report Submitted',
+                        'Thank you for reporting. Margam Safety reviews all reports within 2 hours.'
+                      ),
+                  },
+                  {
+                    text: 'Block Member',
+                    style: 'destructive',
+                    onPress: () => {
+                      Alert.alert(
+                        'Member Blocked',
+                        `${recipientName} has been blocked and removed from your connections.`
+                      );
+                      onBack();
+                    },
+                  },
+                  { text: 'Cancel', style: 'cancel' },
+                ]
               );
             }}
             activeOpacity={0.8}
