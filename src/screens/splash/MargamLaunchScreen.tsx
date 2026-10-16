@@ -1,15 +1,7 @@
-// MARGAM — Minimalist Premium Splash Screen & App Opening Animation
-// Pure White Canvas (#FFFFFF) • Official Margam Logo • Refined Tagline Motion
-// Sequence (Total ~2.8s):
-//   Stage A (0.0s – 0.4s): Pure white canvas
-//   Stage B (0.35s – 1.2s): Subtle, smooth scale & opacity entrance of the official Margam logo
-//   Stage C (0.9s – 1.7s): Tagline reveals below logo with gentle upward movement & fade-in
-//   Stage D (1.7s – 2.8s): Brief hold and seamless crossfade dissolve directly into live application
-//
-// Integrated with AppStartupCoordinator for non-blocking parallel service preloading (auth, profile, matches)
-// and repeat-launch fast entrance (2.8s initial vs 1.2s repeat launch).
+// MARGAM — Short, restrained brand handoff on a white canvas.
+// The bundled logo includes the Margam wordmark; show it once with the official tagline.
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -40,10 +32,12 @@ export const MargamLaunchScreen: React.FC<MargamLaunchScreenProps> = ({
   minDurationMs,
 }) => {
   const { coordinator, targetAnimationDuration } = useAppStartupCoordinator();
-  const effectiveDuration = minDurationMs ?? targetAnimationDuration;
-  const timeScale = effectiveDuration / 2800;
-
-  const [_reduceMotion, setReduceMotion] = useState<boolean>(false);
+  const onAnimationCompleteRef = useRef(onAnimationComplete);
+  onAnimationCompleteRef.current = onAnimationComplete;
+  // Keep cold starts brief. The coordinator's older 2.8s cinematic timing made
+  // every fresh process wait too long before the actual app became available.
+  const effectiveDuration = Math.min(minDurationMs ?? targetAnimationDuration, 900);
+  const timeScale = effectiveDuration / 900;
 
   // Animation Drivers (Native Driver GPU-accelerated)
   const logoOpacityAnim = useRef(new Animated.Value(0)).current;
@@ -52,135 +46,116 @@ export const MargamLaunchScreen: React.FC<MargamLaunchScreenProps> = ({
   const taglineTranslateYAnim = useRef(new Animated.Value(10)).current;
   const screenOpacityAnim = useRef(new Animated.Value(1)).current;
 
-  // Master Timer References for Safe Cleanup
-  const stageBTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const stageCTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const stageDTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const failSafeTimerRef = useRef<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
     // Start parallel non-blocking application state preloading immediately
     coordinator.loadEssentialAppState();
 
-    // Query iOS & Android Reduced Motion Accessibility Setting
-    AccessibilityInfo.isReduceMotionEnabled().then((enabled) => {
-      setReduceMotion(enabled);
-      if (enabled) {
-        runReducedMotionSequence();
-      } else {
-        runRefinedLaunchSequence();
-      }
-    });
+    let isDisposed = false;
+    let hasCompleted = false;
+    let activeAnimation: Animated.CompositeAnimation | null = null;
 
-    // Fail-safe insurance to guarantee the splash screen never gets stuck
-    failSafeTimerRef.current = setTimeout(() => {
-      exitToApp();
-    }, effectiveDuration + 500);
+    const complete = () => {
+      if (isDisposed || hasCompleted) return;
+      hasCompleted = true;
+      coordinator.markLaunchComplete();
+      onAnimationCompleteRef.current();
+    };
+
+    // Failsafe in case the accessibility query or animation callback stalls.
+    const failSafeTimer = setTimeout(complete, effectiveDuration + 250);
+
+    const runReducedMotionSequence = () => {
+      if (isDisposed || hasCompleted) return;
+      // Present the brand immediately and use only a very short handoff fade.
+      logoOpacityAnim.setValue(1);
+      logoScaleAnim.setValue(1);
+      taglineOpacityAnim.setValue(1);
+      taglineTranslateYAnim.setValue(0);
+      activeAnimation = Animated.timing(screenOpacityAnim, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      });
+      activeAnimation.start(({ finished }) => {
+        if (finished) complete();
+      });
+    };
+
+    const runRefinedLaunchSequence = () => {
+      if (isDisposed || hasCompleted) return;
+      // Logo first, tagline second, then a quick crossfade into the live app.
+      activeAnimation = Animated.sequence([
+        Animated.parallel([
+          Animated.timing(logoOpacityAnim, {
+            toValue: 1,
+            duration: 280 * timeScale,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+          Animated.timing(logoScaleAnim, {
+            toValue: 1,
+            duration: 280 * timeScale,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.delay(70 * timeScale),
+        Animated.parallel([
+          Animated.timing(taglineOpacityAnim, {
+            toValue: 1,
+            duration: 190 * timeScale,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(taglineTranslateYAnim, {
+            toValue: 0,
+            duration: 190 * timeScale,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.delay(180 * timeScale),
+        Animated.timing(screenOpacityAnim, {
+          toValue: 0,
+          duration: 180 * timeScale,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]);
+      activeAnimation.start(({ finished }) => {
+        if (finished) complete();
+      });
+    };
+
+    // Respect the OS preference; fall back to the short standard reveal if the
+    // platform query is unavailable.
+    AccessibilityInfo.isReduceMotionEnabled()
+      .then((reduceMotion) => {
+        if (reduceMotion) runReducedMotionSequence();
+        else runRefinedLaunchSequence();
+      })
+      .catch(runRefinedLaunchSequence);
 
     return () => {
-      if (stageBTimerRef.current) clearTimeout(stageBTimerRef.current);
-      if (stageCTimerRef.current) clearTimeout(stageCTimerRef.current);
-      if (stageDTimerRef.current) clearTimeout(stageDTimerRef.current);
-      if (failSafeTimerRef.current) clearTimeout(failSafeTimerRef.current);
+      isDisposed = true;
+      clearTimeout(failSafeTimer);
+      activeAnimation?.stop();
       logoOpacityAnim.stopAnimation();
       logoScaleAnim.stopAnimation();
       taglineOpacityAnim.stopAnimation();
       taglineTranslateYAnim.stopAnimation();
       screenOpacityAnim.stopAnimation();
     };
-  }, []);
-
-  const runReducedMotionSequence = () => {
-    Animated.parallel([
-      Animated.timing(logoOpacityAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-      Animated.timing(logoScaleAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }),
-      Animated.timing(taglineOpacityAnim, {
-        toValue: 1,
-        duration: 400,
-        delay: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(taglineTranslateYAnim, {
-        toValue: 0,
-        duration: 400,
-        delay: 200,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
-    stageDTimerRef.current = setTimeout(() => {
-      exitToApp();
-    }, 1200);
-  };
-
-  const runRefinedLaunchSequence = () => {
-    // -------------------------------------------------------------
-    // STAGE B: Logo Entrance (0.35s – 1.2s)
-    // -------------------------------------------------------------
-    stageBTimerRef.current = setTimeout(() => {
-      Animated.parallel([
-        Animated.timing(logoOpacityAnim, {
-          toValue: 1,
-          duration: 700 * timeScale,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-        Animated.timing(logoScaleAnim, {
-          toValue: 1.0,
-          duration: 800 * timeScale,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }, 350 * timeScale);
-
-    // -------------------------------------------------------------
-    // STAGE C: Tagline Reveal (0.9s – 1.7s)
-    // -------------------------------------------------------------
-    stageCTimerRef.current = setTimeout(() => {
-      Animated.parallel([
-        Animated.timing(taglineOpacityAnim, {
-          toValue: 1,
-          duration: 650 * timeScale,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(taglineTranslateYAnim, {
-          toValue: 0,
-          duration: 650 * timeScale,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }, 900 * timeScale);
-
-    // -------------------------------------------------------------
-    // STAGE D: Transition into the Real Application (1.7s – 2.8s)
-    // -------------------------------------------------------------
-    stageDTimerRef.current = setTimeout(() => {
-      exitToApp();
-    }, effectiveDuration - 350);
-  };
-
-  const exitToApp = () => {
-    coordinator.markLaunchComplete();
-    Animated.timing(screenOpacityAnim, {
-      toValue: 0,
-      duration: 350,
-      easing: Easing.inOut(Easing.quad),
-      useNativeDriver: true,
-    }).start(() => {
-      onAnimationComplete();
-    });
-  };
+  }, [
+    coordinator,
+    effectiveDuration,
+    logoOpacityAnim,
+    logoScaleAnim,
+    screenOpacityAnim,
+    taglineOpacityAnim,
+    taglineTranslateYAnim,
+    timeScale,
+  ]);
 
   return (
     <Animated.View
@@ -209,6 +184,8 @@ export const MargamLaunchScreen: React.FC<MargamLaunchScreenProps> = ({
             source={require('../../../assets/images/margam_logo_3d.png')}
             style={styles.logoImage}
             resizeMode="contain"
+            accessibilityLabel="Margam"
+            accessible
           />
         </Animated.View>
 
