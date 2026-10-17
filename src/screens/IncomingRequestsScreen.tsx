@@ -55,7 +55,7 @@ export const IncomingRequestsScreen: React.FC<IncomingRequestsScreenProps> = ({
     if (req) {
       onAcceptRequest(req);
       setSuccessToast(
-        `Introduction with ${req.requesterRevealedData.firstName || 'Candidate'} accepted! Stage 3 permissions unlocked.`
+        `Introduction with ${req.requesterRevealedData.firstName || 'Candidate'} accepted. Private details remain protected until shared with consent.`
       );
       setTimeout(() => setSuccessToast(null), 4000);
     }
