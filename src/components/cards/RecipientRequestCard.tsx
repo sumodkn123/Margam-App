@@ -24,6 +24,8 @@ import {
   CheckCircle2,
   Navigation,
   Heart,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react-native';
 
 interface RecipientRequestCardProps {
@@ -45,6 +47,7 @@ export const RecipientRequestCard: React.FC<RecipientRequestCardProps> = ({
 }) => {
   const { requesterRevealedData, routeDetails } = request;
   const [showFullMenu, setShowFullMenu] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <View style={styles.cardContainer}>
@@ -107,6 +110,31 @@ export const RecipientRequestCard: React.FC<RecipientRequestCardProps> = ({
         </View>
       </View>
 
+      <TouchableOpacity
+        style={styles.expandButton}
+        onPress={() => setIsExpanded((expanded) => !expanded)}
+        activeOpacity={0.8}
+        accessibilityRole="button"
+        accessibilityLabel={isExpanded ? 'Show less request details' : 'Review full introduction'}
+        accessibilityState={{ expanded: isExpanded }}
+      >
+        <Text style={styles.expandButtonText}>
+          {isExpanded ? 'Show less details' : 'Review full introduction'}
+        </Text>
+        {isExpanded ? <ChevronUp size={17} color="#2563EB" /> : <ChevronDown size={17} color="#2563EB" />}
+      </TouchableOpacity>
+
+      {!isExpanded && (
+        <View style={styles.collapsedPrivacyNote}>
+          <ShieldAlert size={14} color="#15803D" />
+          <Text style={styles.collapsedPrivacyText}>
+            Only details selected for this request are shown. Contact information and precise location remain private.
+          </Text>
+        </View>
+      )}
+
+      {isExpanded && (
+        <View style={styles.expandedDetails}>
       {/* Personal Message Note */}
       {(request.customMessage || requesterRevealedData.shortIntro) && (
         <View style={styles.introBox}>
@@ -149,53 +177,26 @@ export const RecipientRequestCard: React.FC<RecipientRequestCardProps> = ({
         </View>
       )}
 
-      {/* Match Highlights (if enabled) */}
-      {request.includeMatchingDetails !== false && (
-        <View style={styles.matchHighlightsBox}>
-          <View style={styles.reasonsHeader}>
-            <Sparkles size={13} color="#E11D48" />
-            <Text style={[styles.reasonsHeaderText, { color: '#9F1239' }]}>Match Highlights</Text>
-          </View>
-          <View style={styles.matchHighlightsGrid}>
-            <View style={styles.matchMiniPill}>
-              <Text style={styles.matchMiniPillText}>💖 {request.compatibilityPercentage}% Compatible</Text>
+      {/* Only show a score when a real numeric value exists. */}
+      {request.includeMatchingDetails !== false &&
+        typeof request.compatibilityPercentage === 'number' && (
+          <View style={styles.matchHighlightsBox}>
+            <View style={styles.reasonsHeader}>
+              <Sparkles size={13} color="#E11D48" />
+              <Text style={[styles.reasonsHeaderText, { color: '#9F1239' }]}>Match Highlights</Text>
             </View>
-            <View style={styles.matchMiniPill}>
-              <Text style={styles.matchMiniPillText}>☕ 5 Shared Margams</Text>
+            <View style={styles.matchHighlightsGrid}>
+              <View style={styles.matchMiniPill}>
+                <Text style={styles.matchMiniPillText}>
+                  {request.compatibilityPercentage}% compatibility estimate
+                </Text>
+              </View>
             </View>
-            <View style={styles.matchMiniPill}>
-              <Text style={styles.matchMiniPillText}>🎯 3 Common Goals</Text>
-            </View>
+            <Text style={styles.matchDisclaimer}>
+              An estimate, not a guarantee. Only available matching data is displayed.
+            </Text>
           </View>
-        </View>
-      )}
-
-      {/* "Why Margam thinks you may be compatible" */}
-      <View style={styles.reasonsCard}>
-        <View style={styles.reasonsHeader}>
-          <Sparkles size={13} color={COLORS.primary} />
-          <Text style={styles.reasonsHeaderText}>Why Margam Suggests Compatibility</Text>
-        </View>
-
-        <View style={styles.reasonsList}>
-          <View style={styles.reasonRow}>
-            <CheckCircle2 size={13} color={COLORS.privacyAccepted} />
-            <Text style={styles.reasonText}>Similar marriage timeline horizon</Text>
-          </View>
-          <View style={styles.reasonRow}>
-            <CheckCircle2 size={13} color={COLORS.privacyAccepted} />
-            <Text style={styles.reasonText}>Complementary location & travel corridor</Text>
-          </View>
-          <View style={styles.reasonRow}>
-            <CheckCircle2 size={13} color={COLORS.privacyAccepted} />
-            <Text style={styles.reasonText}>Shared lifestyle & wellness values</Text>
-          </View>
-          <View style={styles.reasonRow}>
-            <CheckCircle2 size={13} color={COLORS.privacyAccepted} />
-            <Text style={styles.reasonText}>Balanced career & mutual independence aspirations</Text>
-          </View>
-        </View>
-      </View>
+        )}
 
       {/* Acceptance Meaning Notice */}
       <View style={styles.noticeBox}>
@@ -203,6 +204,9 @@ export const RecipientRequestCard: React.FC<RecipientRequestCardProps> = ({
           Accepting only signifies: "I am comfortable continuing this introduction." Your full private details remain protected.
         </Text>
       </View>
+
+        </View>
+      )}
 
       {/* Action Buttons */}
       <View style={styles.actionsContainer}>
@@ -362,6 +366,46 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#475569',
     fontWeight: '500',
+  },
+  expandButton: {
+    minHeight: 42,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+    backgroundColor: '#EFF6FF',
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+  },
+  expandButtonText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#2563EB',
+  },
+  collapsedPrivacyNote: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 7,
+    backgroundColor: '#F0FDF4',
+    borderRadius: 10,
+    padding: 10,
+  },
+  collapsedPrivacyText: {
+    flex: 1,
+    fontSize: 11,
+    lineHeight: 16,
+    color: '#166534',
+  },
+  expandedDetails: {
+    gap: 12,
+  },
+  matchDisclaimer: {
+    fontSize: 10,
+    lineHeight: 15,
+    color: '#64748B',
   },
   introBox: {
     backgroundColor: '#EFF6FF',
