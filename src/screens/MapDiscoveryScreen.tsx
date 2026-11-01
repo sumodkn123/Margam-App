@@ -794,6 +794,7 @@ export const MapDiscoveryScreen: React.FC<MapDiscoveryScreenProps> = ({
             isLoading={isLoading}
             radiusMeters={mode === 'destination' ? destinationRadiusKm * 1000 : aroundMeRadiusKm * 1000}
             mode={mode}
+            routeDetourMinutes={routeDetourThreshold}
             mapType={mapType}
             showsTraffic={showsTraffic}
             onSelectCluster={handleSelectCluster}

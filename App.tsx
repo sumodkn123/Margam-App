@@ -4,14 +4,13 @@
 
 import React, { useState } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
   View,
   StatusBar,
   Platform,
   Modal,
 } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { CURRENT_USER, SAMPLE_INCOMING_REQUEST, ANONYMOUS_MATCHES, POPULAR_ROUTES } from './src/constants/mockData';
 import {
   AnonymousCandidate,
@@ -344,8 +343,8 @@ export default function App() {
   if (!isAuthenticated) {
     return (
       <SafeAreaProvider>
-        <SafeAreaView style={styles.safeArea}>
-          <StatusBar barStyle="light-content" backgroundColor="#0F172A" />
+        <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right', 'bottom']}>
+          <StatusBar barStyle="dark-content" backgroundColor="#FAF9F6" />
           <MargamAuthFlow onAuthenticated={() => setIsAuthenticated(true)} />
           {isLaunchScreenActive && (
             <MargamLaunchScreen onAnimationComplete={() => setIsLaunchScreenActive(false)} />
@@ -357,8 +356,8 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.safeArea}>
-        <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+        <StatusBar barStyle="dark-content" backgroundColor="#FAF9F6" />
 
       {/* Main Screen Body */}
       <View style={styles.screenWrapper}>
@@ -723,12 +722,11 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    backgroundColor: '#FAF9F6',
   },
   screenWrapper: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAF9F6',
   },
   clusterModalOverlay: {
     flex: 1,

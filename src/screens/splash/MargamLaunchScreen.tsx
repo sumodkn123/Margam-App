@@ -58,6 +58,7 @@ export const MargamLaunchScreen: React.FC<MargamLaunchScreenProps> = ({
       if (isDisposed || hasCompleted) return;
       hasCompleted = true;
       coordinator.markLaunchComplete();
+      onAnimationComplete();
       onAnimationCompleteRef.current();
     };
 

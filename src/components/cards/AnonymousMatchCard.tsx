@@ -15,6 +15,7 @@ import {
   Sparkles,
   Users,
   Heart,
+  X,
 } from 'lucide-react-native';
 
 interface AnonymousMatchCardProps {
@@ -58,8 +59,14 @@ export const AnonymousMatchCard: React.FC<AnonymousMatchCardProps> = ({
         </View>
 
         {onClose && (
-          <TouchableOpacity onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-            <Text style={styles.closeBtn}>&times;</Text>
+          <TouchableOpacity
+            onPress={onClose}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            style={styles.closeBtnTouchable}
+            accessibilityLabel="Dismiss match card"
+            accessibilityRole="button"
+          >
+            <X size={18} color={COLORS.textMuted} />
           </TouchableOpacity>
         )}
       </View>
@@ -212,10 +219,13 @@ const styles = StyleSheet.create({
     color: '#64748B',
     fontWeight: '600',
   },
-  closeBtn: {
-    fontSize: 22,
-    color: '#64748B',
-    lineHeight: 22,
+  closeBtnTouchable: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   bodySection: {
     marginVertical: 4,
@@ -251,12 +261,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   reasoningSection: {
-    backgroundColor: '#F0FDF4',
+    backgroundColor: COLORS.primarySubtle,
     borderRadius: 14,
     padding: 12,
     marginVertical: 10,
     borderWidth: 1,
-    borderColor: '#BBF7D0',
+    borderColor: 'rgba(225, 29, 72, 0.15)',
   },
   reasoningHeader: {
     flexDirection: 'row',
@@ -267,7 +277,7 @@ const styles = StyleSheet.create({
   reasoningHeaderText: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#166534',
+    color: COLORS.primaryDark,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
@@ -281,7 +291,7 @@ const styles = StyleSheet.create({
   },
   reasonText: {
     fontSize: 12,
-    color: '#166534',
+    color: COLORS.textSecondary,
     flex: 1,
   },
   privacyNoticeBox: {
@@ -294,17 +304,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   actionButton: {
-    backgroundColor: '#EF4444',
+    backgroundColor: COLORS.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
     height: 48,
     borderRadius: 14,
-    shadowColor: '#EF4444',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+    shadowColor: COLORS.primaryDark,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
     elevation: 3,
   },
   actionButtonText: {

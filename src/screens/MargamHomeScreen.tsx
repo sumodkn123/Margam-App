@@ -90,6 +90,13 @@ export const MargamHomeScreen: React.FC<MargamHomeScreenProps> = ({
 
   // Today's Match Insights State (Independently calculated dynamic statistics)
   const [todayInsights, setTodayInsights] = useState<MatchInsightsSummary>(() => getTodayMatchInsights());
+
+  const getTimeGreeting = (): string => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return 'Good Morning,';
+    if (hour >= 12 && hour < 17) return 'Good Afternoon,';
+    return 'Good Evening,';
+  };
   const [newMatchesModalVisible, setNewMatchesModalVisible] = useState(false);
   const [routeInsightsModalVisible, setRouteInsightsModalVisible] = useState(false);
   const [destinationInsightsModalVisible, setDestinationInsightsModalVisible] = useState(false);
@@ -240,6 +247,9 @@ export const MargamHomeScreen: React.FC<MargamHomeScreenProps> = ({
           <TouchableOpacity
             style={styles.headerIconBtn}
             activeOpacity={0.8}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityRole="button"
+            accessibilityLabel="Notifications"
             onPress={() => {
               if (onOpenNotifications) {
                 onOpenNotifications();
@@ -255,6 +265,9 @@ export const MargamHomeScreen: React.FC<MargamHomeScreenProps> = ({
           {/* Preferences / Filter Sheet */}
           <TouchableOpacity
             style={styles.headerIconBtn}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityRole="button"
+            accessibilityLabel="Discovery Preferences"
             onPress={() => setFilterModalVisible(true)}
             activeOpacity={0.8}
           >
@@ -262,7 +275,13 @@ export const MargamHomeScreen: React.FC<MargamHomeScreenProps> = ({
           </TouchableOpacity>
 
           {/* Profile Avatar */}
-          <TouchableOpacity onPress={onOpenProfile} activeOpacity={0.85}>
+          <TouchableOpacity
+            onPress={onOpenProfile}
+            activeOpacity={0.85}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityRole="button"
+            accessibilityLabel="View Profile"
+          >
             <Image
               source={{ uri: CURRENT_USER.profilePhotoUrl }}
               style={styles.avatarImg}
@@ -304,7 +323,7 @@ export const MargamHomeScreen: React.FC<MargamHomeScreenProps> = ({
 
             {/* Greeting & Headline */}
             <View style={styles.greetingContent}>
-              <Text style={styles.greetingPre}>Good Morning,</Text>
+              <Text style={styles.greetingPre}>{getTimeGreeting()}</Text>
               <Text style={styles.greetingName}>Sumod 👋</Text>
               <Text style={styles.greetingQuote}>
                 “New paths bring new people. Your next match could be closer than you think.”
