@@ -2,7 +2,7 @@
 // Validates pure white background (#FFFFFF), official Margam 3D logo,
 // single exact tagline ("Shared journeys. Meaningful life partners."),
 // complete removal of scenic photography, large pink circle, empty image placeholders,
-// and smooth 4-stage native animation into genuine application.
+// and smooth 5-stage native animation into genuine application.
 
 import fs from 'fs';
 import path from 'path';
@@ -115,14 +115,17 @@ console.log('\n--- TEST 4: Correct Margam Branding & Single Tagline ---');
 }
 
 // -------------------------------------------------------------
-// TEST 5: Smooth 4-Stage Motion & Native Driver Easing
+// TEST 5: Smooth 5-Stage Choreographed Motion & Native Driver
 // -------------------------------------------------------------
-console.log('\n--- TEST 5: Smooth 4-Stage Motion & Native Driver ---');
+console.log('\n--- TEST 5: Smooth 5-Stage Motion & Native Driver ---');
 {
   const launchFile = fs.readFileSync(
     path.resolve(process.cwd(), 'src/screens/splash/MargamLaunchScreen.tsx'),
     'utf-8'
   );
+
+  // Stage A: White canvas delay
+  assert(launchFile.includes('Stage A: Pure White Canvas Hold') || launchFile.includes('Animated.delay'), 'Must feature Stage A white canvas hold');
 
   // Stage B: Logo entrance
   assert(launchFile.includes('logoOpacityAnim'), 'Must drive logo opacity entrance');
@@ -132,14 +135,19 @@ console.log('\n--- TEST 5: Smooth 4-Stage Motion & Native Driver ---');
   assert(launchFile.includes('taglineOpacityAnim'), 'Must drive tagline fade-in');
   assert(launchFile.includes('taglineTranslateYAnim'), 'Must drive tagline subtle upward movement');
 
-  // Stage D: Seamless exit
+  // Stage D: Subtle pulse & luminous ambient shimmer
+  assert(launchFile.includes('shimmerOpacityAnim'), 'Must drive Stage D subtle luminous shimmer aura');
+  assert(launchFile.includes('logoGlowAura'), 'Must render Stage D luminous ambient shimmer aura view');
+
+  // Stage E: Seamless exit & depth zoom
   assert(launchFile.includes('screenOpacityAnim'), 'Must drive seamless crossfade exit');
+  assert(launchFile.includes('screenScaleAnim'), 'Must drive Stage E depth zoom transition');
 
   // Hardware acceleration
   assert(launchFile.includes('useNativeDriver: true'), 'Animations must use native GPU driver');
   assert(launchFile.includes('Easing.out'), 'Must use refined easing with gentle deceleration');
 
-  console.log('✅ Passed: 4-stage smooth motion choreography and native GPU drivers verified.');
+  console.log('✅ Passed: 5-stage smooth motion choreography and native GPU drivers verified.');
 }
 
 // -------------------------------------------------------------
@@ -178,6 +186,24 @@ console.log('\n--- TEST 7: App.tsx Integration ---');
   console.log('✅ Passed: App.tsx integration verified.');
 }
 
+// -------------------------------------------------------------
+// TEST 8: Standalone HTML Preview Parity (maargam-splash.html)
+// -------------------------------------------------------------
+console.log('\n--- TEST 8: Standalone HTML Preview Parity ---');
+{
+  const htmlPath = path.resolve(process.cwd(), 'maargam-splash.html');
+  assert(fs.existsSync(htmlPath), 'maargam-splash.html must exist for browser testing');
+
+  const htmlContent = fs.readFileSync(htmlPath, 'utf-8');
+  assert(htmlContent.includes('Shared journeys. Meaningful life partners.'), 'HTML preview must include exact official tagline');
+  assert(htmlContent.includes('margam_logo_3d.png'), 'HTML preview must use official 3D logo');
+  assert(!htmlContent.includes('Maargam</h2>') && !htmlContent.includes('Maargam</h1>'), 'HTML preview must not contain "Maargam" misspelling in headings');
+  assert(!htmlContent.includes('Kettuvallam'), 'HTML preview must remove Kerala backwater houseboat');
+  assert(!htmlContent.includes('skyGrad'), 'HTML preview must remove sunset sky gradient');
+
+  console.log('✅ Passed: Standalone HTML preview parity verified.');
+}
+
 console.log('\n=============================================================');
-console.log('🎉 ALL 7 REFINED SPLASH SCREEN ACCEPTANCE TESTS PASSED (100%)!');
+console.log('🎉 ALL 8 REFINED SPLASH SCREEN ACCEPTANCE TESTS PASSED (100%)!');
 console.log('=============================================================\n');

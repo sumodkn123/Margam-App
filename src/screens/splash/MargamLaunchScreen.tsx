@@ -1,5 +1,17 @@
-// MARGAM — Short, restrained brand handoff on a white canvas.
-// The bundled logo includes the Margam wordmark; show it once with the official tagline.
+// MARGAM — Minimalist, Pure White Canvas Splash Screen (#FFFFFF)
+// Official Margam 3D Retina Brand Mark • Single Exact Tagline • 5-Stage Choreographed Flow
+// Stages (Total ~2.75s – 3.1s):
+//   Stage A (0.0s – 0.35s): Pure white canvas hold (#FFFFFF). Zero distractions.
+//   Stage B (0.35s – 1.15s): Official 3D Margam logo enters with smooth opacity & subtle scale (0.90 -> 1.0) via cubic easing.
+//   Stage C (1.10s – 1.70s): Tagline reveals below logo with gentle upward glide & fade-in.
+//   Stage D (1.65s – 2.45s): Subtle breathing pulse (1.0 -> 1.025 -> 1.0) & gentle luminous ambient shimmer aura.
+//   Stage E (2.45s – 2.85s): Seamless crossfade and soft depth zoom (1.0 -> 1.03) directly into genuine Margam app.
+//
+// Features:
+// - GPU-accelerated 60fps Native Driver transitions
+// - Integrated AppStartupCoordinator parallel state preloading
+// - Native accessibility reduced-motion check
+// - Guaranteed failsafe timeout (never hangs)
 
 import React, { useEffect, useRef } from 'react';
 import {
@@ -34,17 +46,20 @@ export const MargamLaunchScreen: React.FC<MargamLaunchScreenProps> = ({
   const { coordinator, targetAnimationDuration } = useAppStartupCoordinator();
   const onAnimationCompleteRef = useRef(onAnimationComplete);
   onAnimationCompleteRef.current = onAnimationComplete;
-  // Keep cold starts brief. The coordinator's older 2.8s cinematic timing made
-  // every fresh process wait too long before the actual app became available.
-  const effectiveDuration = Math.min(minDurationMs ?? targetAnimationDuration, 900);
-  const timeScale = effectiveDuration / 900;
+
+  // 2.5s - 3.2s choreographed sequence on standard launch
+  const baseDuration = minDurationMs ?? targetAnimationDuration ?? 2800;
+  const effectiveDuration = minDurationMs ? minDurationMs : Math.max(baseDuration, 2750);
+  const timeScale = effectiveDuration / 2800;
 
   // Animation Drivers (Native Driver GPU-accelerated)
   const logoOpacityAnim = useRef(new Animated.Value(0)).current;
   const logoScaleAnim = useRef(new Animated.Value(0.90)).current;
+  const shimmerOpacityAnim = useRef(new Animated.Value(0)).current;
   const taglineOpacityAnim = useRef(new Animated.Value(0)).current;
-  const taglineTranslateYAnim = useRef(new Animated.Value(10)).current;
+  const taglineTranslateYAnim = useRef(new Animated.Value(12)).current;
   const screenOpacityAnim = useRef(new Animated.Value(1)).current;
+  const screenScaleAnim = useRef(new Animated.Value(1.0)).current;
 
   useEffect(() => {
     // Start parallel non-blocking application state preloading immediately
@@ -62,19 +77,19 @@ export const MargamLaunchScreen: React.FC<MargamLaunchScreenProps> = ({
       onAnimationCompleteRef.current();
     };
 
-    // Failsafe in case the accessibility query or animation callback stalls.
-    const failSafeTimer = setTimeout(complete, effectiveDuration + 250);
+    // Failsafe in case accessibility query or animation callback stalls
+    const failSafeTimer = setTimeout(complete, effectiveDuration + 500);
 
     const runReducedMotionSequence = () => {
       if (isDisposed || hasCompleted) return;
-      // Present the brand immediately and use only a very short handoff fade.
+      // Present brand immediately with short, gentle 200ms handoff fade
       logoOpacityAnim.setValue(1);
       logoScaleAnim.setValue(1);
       taglineOpacityAnim.setValue(1);
       taglineTranslateYAnim.setValue(0);
       activeAnimation = Animated.timing(screenOpacityAnim, {
         toValue: 0,
-        duration: 100,
+        duration: 200,
         useNativeDriver: true,
       });
       activeAnimation.start(({ finished }) => {
@@ -84,52 +99,109 @@ export const MargamLaunchScreen: React.FC<MargamLaunchScreenProps> = ({
 
     const runRefinedLaunchSequence = () => {
       if (isDisposed || hasCompleted) return;
-      // Logo first, tagline second, then a quick crossfade into the live app.
+
+      // 5-Stage Choreography:
+      // Stage A (0 - 350ms): Pure white canvas hold
+      // Stage B (350 - 1100ms): Logo entrance with smooth scale & opacity
+      // Stage C (1150 - 1700ms): Tagline upward slide & fade-in
+      // Stage D (1700 - 2450ms): Subtle breathing pulse & luminous ambient shimmer
+      // Stage E (2450 - 2850ms): Seamless crossfade & soft zoom into genuine app
       activeAnimation = Animated.sequence([
+        // Stage A: Pure White Canvas Hold
+        Animated.delay(350 * timeScale),
+
+        // Stage B: Logo Entrance
         Animated.parallel([
           Animated.timing(logoOpacityAnim, {
             toValue: 1,
-            duration: 280 * timeScale,
+            duration: 700 * timeScale,
             easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }),
           Animated.timing(logoScaleAnim, {
             toValue: 1,
-            duration: 280 * timeScale,
+            duration: 750 * timeScale,
             easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }),
         ]),
-        Animated.delay(70 * timeScale),
+
+        // Brief settling beat
+        Animated.delay(80 * timeScale),
+
+        // Stage C: Tagline Reveal
         Animated.parallel([
           Animated.timing(taglineOpacityAnim, {
             toValue: 1,
-            duration: 190 * timeScale,
+            duration: 550 * timeScale,
             easing: Easing.out(Easing.quad),
             useNativeDriver: true,
           }),
           Animated.timing(taglineTranslateYAnim, {
             toValue: 0,
-            duration: 190 * timeScale,
+            duration: 600 * timeScale,
             easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }),
         ]),
-        Animated.delay(180 * timeScale),
-        Animated.timing(screenOpacityAnim, {
-          toValue: 0,
-          duration: 180 * timeScale,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }),
+
+        // Stage D: Subtle Breathing Pulse & Luminous Shimmer
+        Animated.parallel([
+          Animated.sequence([
+            Animated.timing(logoScaleAnim, {
+              toValue: 1.025,
+              duration: 380 * timeScale,
+              easing: Easing.inOut(Easing.sin),
+              useNativeDriver: true,
+            }),
+            Animated.timing(logoScaleAnim, {
+              toValue: 1.0,
+              duration: 400 * timeScale,
+              easing: Easing.inOut(Easing.sin),
+              useNativeDriver: true,
+            }),
+          ]),
+          Animated.sequence([
+            Animated.timing(shimmerOpacityAnim, {
+              toValue: 0.45,
+              duration: 380 * timeScale,
+              easing: Easing.inOut(Easing.quad),
+              useNativeDriver: true,
+            }),
+            Animated.timing(shimmerOpacityAnim, {
+              toValue: 0,
+              duration: 420 * timeScale,
+              easing: Easing.inOut(Easing.quad),
+              useNativeDriver: true,
+            }),
+          ]),
+        ]),
+
+        // Elegant hold before transition
+        Animated.delay(120 * timeScale),
+
+        // Stage E: Smooth Transition into Real Application
+        Animated.parallel([
+          Animated.timing(screenOpacityAnim, {
+            toValue: 0,
+            duration: 380 * timeScale,
+            easing: Easing.inOut(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(screenScaleAnim, {
+            toValue: 1.03,
+            duration: 380 * timeScale,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+          }),
+        ]),
       ]);
+
       activeAnimation.start(({ finished }) => {
         if (finished) complete();
       });
     };
 
-    // Respect the OS preference; fall back to the short standard reveal if the
-    // platform query is unavailable.
     AccessibilityInfo.isReduceMotionEnabled()
       .then((reduceMotion) => {
         if (reduceMotion) runReducedMotionSequence();
@@ -143,9 +215,11 @@ export const MargamLaunchScreen: React.FC<MargamLaunchScreenProps> = ({
       activeAnimation?.stop();
       logoOpacityAnim.stopAnimation();
       logoScaleAnim.stopAnimation();
+      shimmerOpacityAnim.stopAnimation();
       taglineOpacityAnim.stopAnimation();
       taglineTranslateYAnim.stopAnimation();
       screenOpacityAnim.stopAnimation();
+      screenScaleAnim.stopAnimation();
     };
   }, [
     coordinator,
@@ -153,6 +227,8 @@ export const MargamLaunchScreen: React.FC<MargamLaunchScreenProps> = ({
     logoOpacityAnim,
     logoScaleAnim,
     screenOpacityAnim,
+    screenScaleAnim,
+    shimmerOpacityAnim,
     taglineOpacityAnim,
     taglineTranslateYAnim,
     timeScale,
@@ -164,13 +240,26 @@ export const MargamLaunchScreen: React.FC<MargamLaunchScreenProps> = ({
         styles.container,
         {
           opacity: screenOpacityAnim,
+          transform: [{ scale: screenScaleAnim }],
         },
       ]}
+      pointerEvents="box-none"
     >
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       {/* Centered Brand Presentation Container */}
       <View style={styles.brandContentContainer}>
+        {/* Stage D: Luminous Ambient Shimmer Aura */}
+        <Animated.View
+          style={[
+            styles.logoGlowAura,
+            {
+              opacity: shimmerOpacityAnim,
+              transform: [{ scale: logoScaleAnim }],
+            },
+          ]}
+        />
+
         {/* Stage B: Official 3D Margam Logo Asset */}
         <Animated.View
           style={[
@@ -225,6 +314,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 24,
+  },
+  logoGlowAura: {
+    position: 'absolute',
+    width: LOGO_WIDTH * 1.25,
+    height: LOGO_HEIGHT * 1.25,
+    borderRadius: (LOGO_WIDTH * 1.25) / 2,
+    backgroundColor: 'rgba(236, 72, 153, 0.08)',
+    shadowColor: '#EC4899',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 28,
+    elevation: 6,
   },
   logoWrapper: {
     width: LOGO_WIDTH,

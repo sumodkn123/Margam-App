@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { MargamLogoNew } from '../components/brand/MargamLogoNew';
 import { CURRENT_USER } from '../constants/mockData';
-import { THEME } from '../constants/theme';
+import { THEME, COLORS } from '../constants/theme';
 import {
   Bell,
   SlidersHorizontal,
@@ -883,14 +883,14 @@ export const MargamHomeScreen: React.FC<MargamHomeScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FAF9F6',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'ios' ? 52 : 42,
+    paddingTop: 8,
     paddingBottom: 10,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
@@ -1201,7 +1201,7 @@ const styles = StyleSheet.create({
   viewDetailsLink: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#2563EB',
+    color: COLORS.primary,
   },
   insightsRow: {
     flexDirection: 'row',

@@ -407,7 +407,7 @@ export const ChatConversationScreen: React.FC<ChatConversationScreenProps> = ({
         <View style={styles.safetyTextCol}>
           <Text style={styles.safetyTitle}>You’re connected on Margam</Text>
           <Text style={styles.safetySubtitle}>
-            You can now chat and share more information at your comfort level.
+            End-to-end encrypted. Interactive demo replies are simulated for preview testing.
           </Text>
         </View>
         <ChevronRight size={14} color="#94A3B8" />

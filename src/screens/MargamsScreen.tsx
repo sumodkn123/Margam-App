@@ -9,7 +9,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
   Animated,
   Platform,
 } from 'react-native';
@@ -25,6 +24,7 @@ import {
   Mountain,
 } from 'lucide-react-native';
 import { MargamLogoNew } from '../components/brand/MargamLogoNew';
+import { COLORS } from '../constants/theme';
 import {
   MargamProfileCandidate,
   AnonymousCandidate,
@@ -82,10 +82,10 @@ const EXPLORE_CATEGORIES = [
     id: 'travel',
     name: 'Travel',
     icon: Plane,
-    activeBg: '#2563EB',
+    activeBg: '#0284C7',
     activeText: '#FFFFFF',
-    inactiveBg: '#EFF6FF',
-    iconColor: '#2563EB',
+    inactiveBg: '#F0F9FF',
+    iconColor: '#0284C7',
     defaultMargam: 'International Travel',
     emoji: '✈',
   },
@@ -93,10 +93,10 @@ const EXPLORE_CATEGORIES = [
     id: 'lifestyle',
     name: 'Lifestyle',
     icon: Leaf,
-    activeBg: '#10B981',
+    activeBg: '#059669',
     activeText: '#FFFFFF',
     inactiveBg: '#ECFDF5',
-    iconColor: '#10B981',
+    iconColor: '#059669',
     defaultMargam: 'Mindful Living',
     emoji: '🍃',
   },
@@ -104,10 +104,10 @@ const EXPLORE_CATEGORIES = [
     id: 'fitness',
     name: 'Fitness',
     icon: Dumbbell,
-    activeBg: '#EC4899',
+    activeBg: '#E11D48',
     activeText: '#FFFFFF',
-    inactiveBg: '#FDF2F8',
-    iconColor: '#EC4899',
+    inactiveBg: '#FFF1F2',
+    iconColor: '#E11D48',
     defaultMargam: 'Fitness & Gym',
     emoji: '🏋',
   },
@@ -115,10 +115,10 @@ const EXPLORE_CATEGORIES = [
     id: 'food',
     name: 'Food',
     icon: Utensils,
-    activeBg: '#F59E0B',
+    activeBg: '#D97706',
     activeText: '#FFFFFF',
     inactiveBg: '#FFFBEB',
-    iconColor: '#EA580C',
+    iconColor: '#D97706',
     defaultMargam: 'Food & Culinary',
     emoji: '🍴',
   },
@@ -241,7 +241,7 @@ export const MargamsScreen: React.FC<MargamsScreenProps> = ({
   };
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
+    <View style={styles.safeContainer}>
       {/* 1. Header Bar matching screenshot */}
       <View style={styles.header}>
         <View style={styles.headerLeftCol}>
@@ -607,14 +607,14 @@ export const MargamsScreen: React.FC<MargamsScreenProps> = ({
           }}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   safeContainer: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAF9F6',
   },
   header: {
     flexDirection: 'row',
@@ -652,11 +652,16 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E2E8F0',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
   },
   exploreSection: {
     paddingTop: 4,
@@ -678,7 +683,7 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#2563EB',
+    color: COLORS.primary,
   },
   categoriesScroll: {
     paddingHorizontal: 16,
@@ -708,22 +713,32 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 14,
     paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingVertical: 7,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 1,
   },
   pathFilterBtn: {
     width: 36,
     height: 36,
     borderRadius: 12,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#E2E8F0',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 1,
   },
   pathBarLeft: {
     flexDirection: 'row',

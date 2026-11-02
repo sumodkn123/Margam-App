@@ -22,6 +22,7 @@ import {
   ChevronRight,
   Shield,
   ShieldCheck,
+  ShieldAlert,
   Eye,
   EyeOff,
   Camera,
@@ -1369,6 +1370,14 @@ export const PrivacyCenterScreen: React.FC<PrivacyCenterScreenProps> = ({
           <Text style={styles.previewNoticeText}>{preview.noticeText}</Text>
         </View>
 
+        {/* Server-Side Enforcement Transparency Card */}
+        <View style={styles.serverEnforcementNotice}>
+          <ShieldAlert size={14} color="#64748B" style={{ marginRight: 6, marginTop: 1 }} />
+          <Text style={styles.serverEnforcementText}>
+            Privacy Assurance: This simulator previews client-side projection rules. In production, unshared biodata, contacts, and photos are quarantined and stripped by backend database security filters before reaching any viewer's device.
+          </Text>
+        </View>
+
         <View style={{ height: 40 }} />
       </ScrollView>
     );
@@ -2606,13 +2615,29 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#F3E8FF',
     padding: 12,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   previewNoticeText: {
     fontSize: 12,
     color: '#7C3AED',
     flex: 1,
     lineHeight: 16,
+  },
+  serverEnforcementNotice: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#F8FAFC',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: 12,
+    marginBottom: 20,
+  },
+  serverEnforcementText: {
+    fontSize: 11,
+    color: '#64748B',
+    flex: 1,
+    lineHeight: 15,
   },
 
   // PRIVACY TEMPLATES

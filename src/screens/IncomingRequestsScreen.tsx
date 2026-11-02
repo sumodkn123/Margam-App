@@ -283,7 +283,7 @@ export const IncomingRequestsScreen: React.FC<IncomingRequestsScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#FAF9F6',
   },
   subheader: {
     paddingHorizontal: 16,

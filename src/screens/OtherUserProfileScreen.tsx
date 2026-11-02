@@ -580,6 +580,22 @@ export const OtherUserProfileScreen: React.FC<OtherUserProfileScreenProps> = ({
             </View>
           </View>
 
+          {/* Verified Credentials vs Self-Reported Breakdown */}
+          <View style={styles.verificationTrustRow}>
+            <TouchableOpacity
+              style={styles.trustBadgeVerified}
+              onPress={() => setIsVerificationModalOpen(true)}
+              activeOpacity={0.8}
+            >
+              <ShieldCheck size={13} color="#059669" />
+              <Text style={styles.trustBadgeTextVerified}>ID & Photo Verified</Text>
+            </TouchableOpacity>
+
+            <View style={styles.trustBadgeReported}>
+              <Text style={styles.trustBadgeTextReported}>Biodata: Self-Reported</Text>
+            </View>
+          </View>
+
           {/* ==================================================== */}
           {/* 3. MY MARGAMS (INTERESTS & GOALS) SECTION            */}
           {/* ==================================================== */}
@@ -1585,6 +1601,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 7,
     borderRadius: 10,
+  },
+  verificationTrustRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 16,
+    marginTop: -8,
+  },
+  trustBadgeVerified: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#ECFDF5',
+    borderWidth: 1,
+    borderColor: '#A7F3D0',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  trustBadgeTextVerified: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#065F46',
+  },
+  trustBadgeReported: {
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  trustBadgeTextReported: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#64748B',
   },
   attrIcon: {
     marginRight: 6,
